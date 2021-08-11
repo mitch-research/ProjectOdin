@@ -11,6 +11,8 @@ import {
 import Home from './Home';
 import Query from './Query';
 import Dash from './Dash';
+
+import '../static/Query.css';
 export default function App(){
     return (<Router>
       <div>
@@ -43,7 +45,11 @@ export default function App(){
             <Query />
           </Route>
           <Route path="/dash">
-            <Dash />
+            <Dash containerId={"id0"}
+            neo4jUri={"bolt://10.0.0.42:7687"}
+            neo4jUser={"neo4j"}
+            neo4jPassword={"devlocal"}
+            />
           </Route>
         </Switch>
       </div>

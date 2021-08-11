@@ -29,8 +29,7 @@ app.get('/', (req, res) => {
     res.send({response:'Hello world!'})
 })
 
-app.get('/getObj', async (req, res) => {
-    res.send({response:'Hit getObj endpoint'})
+app.post('/getObjs', async (req, res) => {
 
     const driver = n4.driver(`bolt://${serverport}`, n4.auth.basic('neo4j', 'devlocal'))
     const session = driver.session(database='testdb');
@@ -45,7 +44,8 @@ app.get('/getObj', async (req, res) => {
     session.close()
     driver.close()
 
-    console.log(result)
+    console.log(result.records)
+    res.send(result.records)
 
 
 })

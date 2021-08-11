@@ -1,12 +1,18 @@
 import React, {useState} from 'react';
 import axios from 'axios';
 
+import '../static/Query.css';
 
-const serverport = "http://localhost:3000"
+
+const serverport = "http://localhost:3001"
+
+
+
+
 export default function Query(){
 
 
-    const [results, updateResults] = useState('')
+    const [results, updateResults] = useState()
     const [verb, updateVerb] = useState('create')
     const [type, updateType] = useState('ipv4')
     const [desc, updateDescriptionState] = useState('')
@@ -18,6 +24,35 @@ export default function Query(){
     function handleDescriptionChange(e){
         updateDescriptionState(e.target.value)
        
+    }
+
+    function resTable(resArray){
+        resArray = resArray.data
+        console.log(resArray)
+        let tempResTable = []
+        for(let i = 0; i < resArray.length; i++){
+            let item = resArray[i]
+            console.log(item)
+            let type = item['_fields'][0]['labels'][0]
+            let properties = item['_fields'][0]['properties']
+            tempResTable.push(<tr key={properties['value'],i}><td>{type}</td><td>{properties['value']}</td><td>{properties['description']}</td></tr>)
+
+        }
+
+        return (
+            <table className="resultsTable"> 
+                <thead> 
+                    <tr> 
+                        <td> Type </td> 
+                        <td> Value </td> 
+                        <td> Description </td> 
+                    </tr> 
+                </thead> 
+                <tbody>
+                    {tempResTable}
+                </tbody>
+            </table>
+        );
     }
 
     async function handleSubmit(){
@@ -40,6 +75,16 @@ export default function Query(){
             const result = await axios.post(`${serverport}/${route}`, obj)
             
             updateResults(`${result.data.type} - ${result.data.value} - delete ${result.data.result}`)
+        }else if(verb === 'read'){
+            const route = 'getObjs'
+            const obj = {
+                'type':type,
+                'value':value
+            }
+
+            const result = await axios.post(`${serverport}/${route}`, obj)
+            
+            updateResults(resTable(result))
         }
     }
 
@@ -165,6 +210,10 @@ export default function Query(){
             );
         }
     }
+
+    function readResults(){
+        return(results)
+    }
     return(
         <>
             <h1>Query</h1>
@@ -180,7 +229,7 @@ export default function Query(){
             {results === '' ?
                 <p>No results!</p> 
                 : 
-                <p>[-] {results}</p>
+                <div>{readResults()}</div>
             }
         </>
     );
