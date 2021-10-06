@@ -44,7 +44,6 @@ app.post('/getObjs', async (req, res) => {
     session.close()
     driver.close()
 
-    console.log(result.records)
     res.send(result.records)
 
 
