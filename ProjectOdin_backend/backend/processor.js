@@ -100,8 +100,30 @@ app.post('/delObj', async (req, res) => {
 
     res.send(ret)
 })
-app.get('/updateObj', (req, res) => {
-    res.send({response:'Hit updateObj endpoint'})
+app.post('/updateObj', async (req, res) => {
+    // res.send({response:'Hit updateObj endpoint'})
+    const driver = n4.driver(`bolt://${serverport}`, n4.auth.basic('neo4j', 'devlocal'))
+    const session = driver.session(database='testdb');
+    var type = req.body.type;
+    var value = req.body.value;
+    var desc = req.body.desc;
+    if(desc.length > 1){
+        console.log(`[-] Updating the description to value ${req.body.desc}`)
+        query = `MATCH (n:${type} {value:'${value}'}) SET n.description = '${req.body.desc}' RETURN n;`
+    }
+    const result = await session.run(query);
+    driver.close();
+    session.close();
+
+    const singleRecord = result.records[0]
+    const node = singleRecord.get(0)
+    ret = {
+        'type': node.labels[0],
+        'value':node.properties.value,
+        'desc':node.properties.description,
+        'result':'Success'
+    }
+    res.send(ret);
 })
 
 
