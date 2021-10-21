@@ -24,12 +24,37 @@ test('GET /', async () => {
     })
 })
 
-test('GET /getObj', async () => {
-    await st(app).get('/getObj')
-    .expect(200)
-    .then((res) => {
-        expect(res.body.response).toBe('Hit getObj endpoint')
+test('GET /getObjs', async () => {
+    test = {
+        'value':'127.0.0.1',
+        'type':'ipv4',
+        'desc':'This is a test variable'
+    }
+    await st(app).post('/createObj').send(test)
+    .expect(200).then((res) => {
+        expect(res.body.result).toBe('Success')
+        expect(res.body.value).toBe(test.value)
+        expect(res.body.type).toBe(test.type)
+        expect(res.body.desc).toBe(test.desc)
+
+        
+    });
+
+    await st(app).post('/getObjs')
+        .send({'type':'ipv4', 'value':'127.0.0.1', 'desc':'This is a test variable'})
+        .expect(200)
+        .then((result) => {
+            expect(result.body[0]['_fields'][0]['labels'][0]).toBe(test['type'])
+            expect(result.body[0]['_fields'][0]['properties']['description']).toBe(test['desc'])
     })
+
+    await st(app).post('/delObj').send(test)
+    .expect(200)
+    .then((res2) => {
+        expect(res2.body.value).toBe(test.value)
+        expect(res2.body.type).toBe(test.type)
+    }
+    )
 })
 
 
@@ -78,9 +103,48 @@ test('GET /delObj', async () => {
 })
 
 test('GET /updateObj', async () => {
-    await st(app).get('/updateObj')
+    req1 = {
+        'type':'ipv4',
+        'value':'127.0.0.1',
+        'desc':'Test description 1'
+    }
+
+    req2 = {
+        'type':'ipv4',
+        'value':'127.0.0.1',
+        'desc':'Test description 2, this should be different!'
+    }
+
+    await st(app).post('/createObj').send(req1)
     .expect(200)
     .then((res) => {
-        expect(res.body.response).toBe('Hit updateObj endpoint')
+        expect(res.body.result).toBe('Success')
+        expect(res.body.value).toBe(req1.value)
+        expect(res.body.type).toBe(req1.type)
+        expect(res.body.desc).toBe(req1.desc)
     })
+
+
+    await st(app).post('/updateObj')
+    .send(req2)
+    .expect(200)
+    .then((res) => {
+        expect(res.body.type).toBe(req1.type)
+        expect(res.body.value).toBe(req1.value)
+        expect(res.body.desc).toBe(req2.desc)
+    })
+
+
+    await st(app).post('/delObj').send(req2)
+    .expect(200)
+    .then((res2) => {
+        expect(res2.body.value).toBe(req2.value)
+        expect(res2.body.type).toBe(req2.type)
+    }
+    )
+
+
+
+
+    
 })

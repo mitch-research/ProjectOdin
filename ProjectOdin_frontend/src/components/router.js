@@ -5,8 +5,7 @@ import {
     Route,
     Link
   } from "react-router-dom";
-
-
+import Box from '@mui/material/Box';
 
 import Home from './Home';
 import Query from './Query';
@@ -17,6 +16,7 @@ export default function App(){
     return (<Router>
       <div>
         <ul>
+      <Box sx={{display:'flex', justifyContent:'space-between'}}>
           <li>
             <Link to="/">Home</Link>
           </li>
@@ -26,6 +26,7 @@ export default function App(){
           <li>
             <Link to="/dash">Dash</Link>
           </li>
+          </Box>
         </ul>
 
         <hr />
@@ -46,7 +47,7 @@ export default function App(){
           </Route>
           <Route path="/dash">
             <Dash containerId={"id0"}
-            neo4jUri={"bolt://10.0.0.42:7687"}
+            neo4jUri={"bolt://192.168.0.15:7687"}
             neo4jUser={"neo4j"}
             neo4jPassword={"devlocal"}
             />
