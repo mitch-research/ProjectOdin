@@ -10,7 +10,7 @@ var cors = require('cors')
 const app = express()
 app.use(cors())
 
-const serverport = '192.168.0.15:7687'
+const serverport = '127.0.0.1:7687'
 
 
 // parse application/x-www-form-urlencoded

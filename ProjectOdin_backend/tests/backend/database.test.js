@@ -1,6 +1,6 @@
 
 const n4 = require('neo4j-driver')
-const serverport = '10.0.0.42:7687'
+const serverport = '127.0.0.1:7687'
 
 const driver = n4.driver(`bolt://${serverport}`, n4.auth.basic('neo4j', 'devlocal'))
 const session = driver.session(database='testdb');

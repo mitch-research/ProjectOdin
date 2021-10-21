@@ -1,12 +1,12 @@
 const axios = require('axios').default
 const st = require('supertest')
 const app = require('../../backend/processor')
-const testEndpoint = 'http://localhost:3000'
+const testEndpoint = 'http://localhost:3003'
 
 
 const n4 = require('neo4j-driver')
 
-const driver = n4.driver('bolt://10.0.0.42:7687', n4.auth.basic('neo4j', 'devlocal'))
+const driver = n4.driver('bolt://127.0.0.1:7687', n4.auth.basic('neo4j', 'devloc'))
 const session = driver.session(database='testdb');
 
 
