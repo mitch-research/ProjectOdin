@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
+import Box from "@mui/material/Box";
 
 import '../static/Query.css';
 
@@ -7,16 +8,20 @@ import '../static/Query.css';
 const serverport = "http://localhost:3001"
 
 
+const style = {
+    backgroundColor: 'red'
+}
 
-
-export default function Query(){
+export default function Query(visRef = {}){
 
 
     const [results, updateResults] = useState()
     const [verb, updateVerb] = useState('create')
     const [type, updateType] = useState('ipv4')
+    console.log(type)
     const [desc, updateDescriptionState] = useState('')
     const [value, updateValueState] = useState('')
+    const [render, setRender] = useState(false)
     function handleValueChange(e){
         updateValueState(e.target.value)
        
@@ -63,6 +68,7 @@ export default function Query(){
                 'value': value,
                 'desc': desc,
             }
+            console.log('Type on submit: ',type)
             const result = await axios.post(`${serverport}/${route}`,obj)
             
             updateResults(`${result.data.type} - ${result.data.value} - ${result.data.desc} - create ${result.data.result}`)
@@ -85,6 +91,9 @@ export default function Query(){
             const result = await axios.post(`${serverport}/${route}`, obj)
             
             updateResults(resTable(result))
+        }
+        if (visRef !== {}){
+            visRef.reload()
         }
     }
 
@@ -216,7 +225,13 @@ export default function Query(){
     }
     return(
         <>
-            <h1>Query</h1>
+        {render ? 
+        <Box component="div" sx = {{display:'flex', flexDirection:'column'}}>
+        <h1>Query</h1>
+        <button onClick={() => setRender(!render)}>Close</button>
+        <Box sx = {{display:'flex', justifyContent:'space-between'}} component="div">
+            
+            <div>
             <h3>Verb</h3>
             <select className="formItem" name="Verb" id="verb" onChange={(e) => handleVerbChange(e)}>
                 <option value="create">CREATE</option>
@@ -224,13 +239,23 @@ export default function Query(){
                 <option value="update">UPDATE</option>
                 <option value="delete">DELETE</option>
             </select>
+            </div>
             {queryBody()}
-            <h3>Results</h3>
-            {results === '' ?
-                <p>No results!</p> 
-                : 
-                <div>{readResults()}</div>
-            }
+            
+        </Box>
+        <h3>Results</h3>
+        <Box>
+        {results === '' ?
+            <p>No results!</p> 
+            : 
+            <div>{readResults()}</div>
+        }
+        </Box>
+        </Box>
+            :
+            <button onClick={setRender}>Query</button> 
+        }
+        
         </>
     );
 }

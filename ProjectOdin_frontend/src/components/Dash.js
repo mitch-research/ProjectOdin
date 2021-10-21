@@ -1,10 +1,18 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import useResizeAware from "react-resize-aware";
 import PropTypes from "prop-types";
 import Neovis from "neovis.js/dist/neovis.js";
+import Query from './Query';
+import DetailsPane from './DetailsPane';
+import Box from "@mui/material/Box";
+
 
 export default function Dash(props){
 
+
+    const [vis, setVis] = useState('');
+    const [slideout, setSlideout] = useState('');
+    const [query, setQuery] = useState(false)
     const {
         width,
         height,
@@ -16,7 +24,9 @@ export default function Dash(props){
     } = props;
 
     const visRef = useRef();
-
+    const handleQuery = () =>{
+      setQuery(!query)
+    }
     useEffect(() => {
 
         const config = {
@@ -24,38 +34,64 @@ export default function Dash(props){
             server_url: neo4jUri,
             server_user: neo4jUser,
             server_password: neo4jPassword,
-
             labels: {
-                ipv4: {
-                    caption: 'value'
-                },
-                email: {
-                    caption: 'value'
-                }
-            },
+              //"Character": "name",
+              "UNDEFINED":{
+                caption:'value'
+              },
+              "email": {
+                  caption: 'value',
+                  "size": "pagerank",
+                  "community":"community"
+              },
+              "ipv4":{
+                caption:'value'
+              }
 
-            initial_cypher: "MATCH (n) RETURN (n)"
+          },
+
+            initial_cypher: "MATCH (n), (a)-[r]->(b) RETURN (n),(a),[r],(b)",
             
         };
-
         const vis = new Neovis(config);
+        vis.registerOnEvent("completed", () =>{
+          console.log('Completed render');
+          vis._network.on('click', (nodes)=>{
+            var id = nodes.nodes[0];
+            if(id){
+              setSlideout(vis.nodes.get(id));
+            }
+          
+          })
+        })
         vis.render();
+        
+        setVis(vis)
     }, [neo4jUri, neo4jUser, neo4jPassword]);
 
-
+    
+    
 
     return(
         <>
-            <h1>Dash</h1>
-
+            <h1 style={{textAlign:'center'}}>Dash</h1>
             
+            <Box sx={{display:'flex'}}>
+            {Query(vis)}
             <div id={containerId}
             ref={visRef}
             style={{
                 width:`100%`,
                 height:`${height}px`,
                 backgroundColor: `${backgroundColor}`,
-            }}/>
+            }}
+            />
+            {slideout !== '' && 
+            <div>
+              { DetailsPane(slideout, setSlideout, vis) }
+            </div>
+            }
+            </Box>
         </>
     );
 }
