@@ -200,28 +200,6 @@ app.post('/addRel', async (req,res) =>{
 })
 
 
-// Enrichments
-// Augury
-app.post('/enrichments/augury', async (req, res) =>{
-    console.log('hit augury endpoint')
-    // Create the job
 
-
-    // Wait for the job to finish
-
-
-    // Format the results
-
-
-    // Send the results
-    res.send('Success')
-});
-
-// SentinelOne
-app.post('/enrichments/s1', async (req, res) => {
-    // Receive 
-
-    res.send('Success')
-})
 // Run the Express app
 module.exports = app
