@@ -2,7 +2,7 @@ import axios from 'axios';
 import React from 'react';
 
 
-const serverport = "http://localhost:3001"
+const serverport = "http://mitchelle.s1.research-dep:3001"
 
 export default function addRelationships(group, value, vis){
     async function addRelCall(newRel, rootVal, rootGroup, visObj){

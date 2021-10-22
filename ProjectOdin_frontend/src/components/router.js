@@ -47,7 +47,7 @@ export default function App(){
           </Route>
           <Route path="/dash">
             <Dash containerId={"id0"}
-            neo4jUri={"bolt://127.0.0.1:7687"}
+            neo4jUri={"bolt://mitchelle.s1.research-dep:7687"}
             neo4jUser={"neo4j"}
             neo4jPassword={"devlocal"}
             />

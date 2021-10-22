@@ -41,21 +41,40 @@ export default function Dash(props){
               },
               "email": {
                   caption: 'value',
-                  "size": "pagerank",
-                  "community":"community"
+                  size: "pagerank",
+                  community:"community"
               },
               "ipv4":{
+                caption:'value',
+                size: "pagerank",
+                community:"community"
+              },
+              "hash":{
+                caption:'value'
+              },
+              "s1_event":{
+                caption:'value'
+              },
+              'md5hash':{
+                caption:'value'
+              },
+              'sha1hash':{
+                caption:'value'
+              },
+              'sha256hash':{
                 caption:'value'
               }
 
           },
 
-            initial_cypher: "MATCH (n), (a)-[r]->(b) RETURN (n),(a),[r],(b)",
+            initial_cypher: "MATCH (n) OPTIONAL MATCH (n)-[r]->(m) RETURN *",
+            //initial_cypher: "MATCH (n) RETURN (n);"
             
         };
         const vis = new Neovis(config);
         vis.registerOnEvent("completed", () =>{
           console.log('Completed render');
+          console.log(Array.from(vis.nodes))
           vis._network.on('click', (nodes)=>{
             var id = nodes.nodes[0];
             if(id){

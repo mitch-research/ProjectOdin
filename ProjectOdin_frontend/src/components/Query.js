@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import '../static/Query.css';
 
 
-const serverport = "http://localhost:3001"
+const serverport = "http://mitchelle.s1.research-dep:3001"
 
 
 const style = {
